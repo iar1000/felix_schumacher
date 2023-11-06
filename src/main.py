@@ -28,7 +28,8 @@ pygame.display.update()
 felix = Felix(SCREEN_W/2, SCREEN_H/2, 
               x_gobal=19900, y_global=11000, 
               size=FELIX_SIZE)
-map = Map(felix, SCREEN_W, SCREEN_H, 
+map = Map(felix, display,
+          SCREEN_W, SCREEN_H, 
           map_path=map_path,
           tile_size=TILE_SIZE, sprite_size=SPRITE_SIZE)
 felix.set_map(map=map)

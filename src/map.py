@@ -75,11 +75,12 @@ def color_to_tilespec(rgb: list) -> [str, str, str]:
 
 class Map():
 
-    def __init__(self, felix: Felix,
+    def __init__(self, felix: Felix, display,
                  display_w: int, display_h: int,
                  map_path: str, 
                  tile_size = 50, sprite_size = 150) -> None:
         self.felix = felix
+        self.display = display
         self.display_w, self.display_h = display_w, display_h
         self.offset_w, self.offset_h = display_w/2, display_h/2
         self.tile_size = tile_size
@@ -97,12 +98,23 @@ class Map():
         print(f"array shape= {pixel_matrix.shape}")
         print(f"tile matrix shape= {len(tile_matrix[0])}x{len(tile_matrix)}")
         
+        total_tiles = height * width
+        laoding_bar_offset = 200
+        loading_bar_size = self.display_w - 2 * laoding_bar_offset
         for y in range(height):
             for x in range(width):
                 background_path, sprite_path, tile_type = color_to_tilespec(pixel_matrix[x][y].tolist())
                 tile_matrix[y][x] = Tile(self.tile_size * x, self.tile_size * y, 
                                             background_path=background_path, sprite_path=sprite_path, tile_type=tile_type,
                                             tile_size=self.tile_size, sprite_size=self.sprite_size)
+            pygame.draw.rect(self.display, (255,0,0), pygame.Rect(laoding_bar_offset, self.offset_h, (y*width + x) / total_tiles * loading_bar_size, 50))
+            if (y*width + x) / total_tiles * loading_bar_size > 65:
+                font = pygame.font.SysFont("Courier", 36)
+                prct = font.render(f"{int((y*width + x) / total_tiles * 100)}%", True, (255, 255, 255))
+                prct_rect = prct.get_rect()
+                prct_rect.topleft = ((y*width + x) / total_tiles * loading_bar_size + laoding_bar_offset - 65, self.offset_h + 5)
+                self.display.blit(prct, prct_rect)
+            pygame.display.update()
         
         return tile_matrix, width, height
     
