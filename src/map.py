@@ -35,7 +35,7 @@ def color_to_tilespec(rgb: list) -> [str, str, str]:
         return base , house, "house"
 
     if rgb == [100, 100, 100]:
-        return os.path.join(basepath, "tiles", "tile_concrete.png"), None, "road"
+        return os.path.join(basepath, "tiles", "tile_stone.png"), None, "road"
 
     if rgb == [255, 255, 0]:
         return os.path.join(basepath, "tiles", "tile_gras.png"), None, "gras"
@@ -78,13 +78,15 @@ class Map():
     def __init__(self, felix: Felix, display,
                  display_w: int, display_h: int,
                  map_path: str, 
-                 tile_size = 50, sprite_size = 150) -> None:
+                 tile_size = 50, sprite_size = 150, sprite_size_variance_tree = 0.15, sprite_size_variance_house = 0.08) -> None:
         self.felix = felix
         self.display = display
         self.display_w, self.display_h = display_w, display_h
         self.offset_w, self.offset_h = display_w/2, display_h/2
         self.tile_size = tile_size
         self.sprite_size = sprite_size
+        self.sprite_size_variance_tree = int(sprite_size_variance_tree * sprite_size)
+        self.sprite_size_variance_house = int(sprite_size_variance_house * sprite_size)
         self.tiles, self.num_tiles_x, self.num_tiles_y = self._image_to_tile_matrix(image_path=map_path)
         print(f"tile matrix controll shape= {len(self.tiles[0])}x{len(self.tiles)}")
 
@@ -94,29 +96,42 @@ class Map():
         height, width = image.size
         tile_matrix = [[None for _ in range(width)] for _ in range(height)]
         pixel_matrix = np.array(image)
-        print(f"read map file {image_path}: ({width}x{height})")
-        print(f"array shape= {pixel_matrix.shape}")
+        print(f"map file {image_path}: ({width}x{height})")
         print(f"tile matrix shape= {len(tile_matrix[0])}x{len(tile_matrix)}")
+        print(f"sprite variances: house={self.sprite_size_variance_house}, tree={self.sprite_size_variance_tree}")
         
         total_tiles = height * width
         laoding_bar_offset = 200
         loading_bar_size = self.display_w - 2 * laoding_bar_offset
         for y in range(height):
             for x in range(width):
+                # get sprite and background 
                 background_path, sprite_path, tile_type = color_to_tilespec(pixel_matrix[x][y].tolist())
+                # put some variance into sizes
+                curr_sprite_size = self.sprite_size
+                if tile_type == "tree":
+                    curr_sprite_size += random.randint(-self.sprite_size_variance_tree, self.sprite_size_variance_tree)
+                if tile_type == "house":
+                    curr_sprite_size += random.randint(-self.sprite_size_variance_house, self.sprite_size_variance_house)
+                # create tile
                 tile_matrix[y][x] = Tile(self.tile_size * x, self.tile_size * y, 
                                             background_path=background_path, sprite_path=sprite_path, tile_type=tile_type,
-                                            tile_size=self.tile_size, sprite_size=self.sprite_size)
+                                            tile_size=self.tile_size, sprite_size=curr_sprite_size)
+                
+            # loading screen
             pygame.draw.rect(self.display, (255,0,0), pygame.Rect(laoding_bar_offset, self.offset_h, (y*width + x) / total_tiles * loading_bar_size, 50))
-            if (y*width + x) / total_tiles * loading_bar_size > 65:
-                font = pygame.font.SysFont("Courier", 36)
+            if (y*width + x) / total_tiles * loading_bar_size > 80:
+                font = pygame.font.SysFont("Monaco", 36)
                 prct = font.render(f"{int((y*width + x) / total_tiles * 100)}%", True, (255, 255, 255))
                 prct_rect = prct.get_rect()
-                prct_rect.topleft = ((y*width + x) / total_tiles * loading_bar_size + laoding_bar_offset - 65, self.offset_h + 5)
+                prct_rect.topleft = ((y*width + x) / total_tiles * loading_bar_size + laoding_bar_offset - 80, self.offset_h + 5)
                 self.display.blit(prct, prct_rect)
             pygame.display.update()
         
         return tile_matrix, width, height
+    
+    def tile_free(self, x, y):
+        return self.tiles[y][x].tile_type == "gras" or self.tiles[y][x].tile_type == "road"
     
     def check_collision(self, x, y) -> bool:
         x_centered, y_centered = x - self.offset_w, y - self.offset_h # add offset to make the position appear in the middle of the screen
