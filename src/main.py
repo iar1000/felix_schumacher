@@ -1,64 +1,115 @@
 
 import pygame
+import argparse
+from map import Map
 from agents.alcoholism import Alcoholism
 from agents.arrow import Arrow
 from agents.felix import Felix
-from camera import Camera
-from map import Map
 
 
-SCREEN_W = 2000
-SCREEN_H = 1000
+SCREEN_W = 1100
+SCREEN_H = 800
 FPS = 60
 
-TILE_SIZE=100
-SPRITE_SIZE=120
+TILE_SIZE = 100
+SPRITE_SIZE = 120
+TREE_VAR = 0.15
+HOUSE_VAR = 0.08
 FELIX_SIZE = 80
 ARROW_SIZE = 100
+BEER_SIZE = 150
 
-map_path = "src/sprites/maps/map_small.png"
+FELIX_MAX_SPEED = 25
 
+FELIX_START_X = 10000
+FELIX_START_Y = 10000
+MAP_PATH = "src/sprites/maps/map_1.png"
 
-pygame.init()
+def run():
+    print("start game")
+    print("window size:", SCREEN_W, SCREEN_H)
+    print("map: ", MAP_PATH)
+    pygame.init()
 
-display = pygame.display.set_mode((SCREEN_W,SCREEN_H))
-pygame.display.set_caption('Felix Schumacher')
-pygame.mouse.set_visible(False)
-clock = pygame.time.Clock()
-pygame.display.update()
+    display = pygame.display.set_mode((SCREEN_W,SCREEN_H))
 
-# create agents
-felix = Felix(SCREEN_W/2, SCREEN_H/2, 
-              x_gobal=1000, y_global=1000, 
-              size=FELIX_SIZE)
-map = Map(felix, display,
-          SCREEN_W, SCREEN_H, 
-          map_path=map_path,
-          tile_size=TILE_SIZE, sprite_size=SPRITE_SIZE)
-felix.set_map(map=map)
-pointer = Arrow(SCREEN_W/2, SCREEN_H/2 + 350, size=ARROW_SIZE)
-gamestate = Alcoholism(map, felix)
-
-# main loop
-running = True
-while running:
-    for event in pygame.event.get():
-            # exit game
-            if event.type == pygame.QUIT:
-                running = False
-
-    # handle input
-    felix.update(pygame.key.get_pressed())
-    pointer.update(felix.get_pos(), gamestate.get_beer_pos())
-    gamestate.update()
-    map.draw(display)
-    pointer.draw(display)
-    gamestate.draw(display)
-    felix.draw(display)
+    pygame.display.set_caption('Felix Schumacher')
+    pygame.mouse.set_visible(False)
+    clock = pygame.time.Clock()
     pygame.display.update()
 
-    clock.tick(FPS)
+    font = pygame.font.SysFont("Courier", 180)
+    text_felix = font.render(f"FELIX", True, (255, 255, 255))
+    text_felix_rect = text_felix.get_rect()
+    text_felix_rect.center = (SCREEN_W/2, SCREEN_H/2 - SCREEN_H/4)
+    display.blit(text_felix, text_felix_rect)
+    text_schumi = font.render(f"SCHUMACHER", True, (255, 255, 255))
+    text_schumi_rect = text_schumi.get_rect()
+    text_schumi_rect.center = (SCREEN_W/2, SCREEN_H/2 + SCREEN_H/4)
+    display.blit(text_schumi, text_schumi_rect)
 
-    #print("update:")
-    #print(f"\tfps: {clock.get_fps()}")
-    #print(f"\tpos: {felix.get_pos()}")
+
+    # create agents
+    felix = Felix(SCREEN_W/2, SCREEN_H/2, 
+                x_gobal=FELIX_START_X, y_global=FELIX_START_Y, 
+                size=FELIX_SIZE,
+                max_speed=FELIX_MAX_SPEED)
+    map = Map(felix, display,
+            SCREEN_W, SCREEN_H, 
+            map_path=MAP_PATH,
+            tile_size=TILE_SIZE, sprite_size=SPRITE_SIZE,
+            sprite_size_variance_tree=TREE_VAR,
+            sprite_size_variance_house=HOUSE_VAR)
+    felix.set_map(map=map)
+    pointer = Arrow(SCREEN_W/2, 7 * SCREEN_H/8, size=ARROW_SIZE)
+    gamestate = Alcoholism(map, felix, size=BEER_SIZE)
+
+    # main loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+                # exit game
+                if event.type == pygame.QUIT:
+                    running = False
+
+        # handle input
+        felix.update(pygame.key.get_pressed())
+        pointer.update(felix.get_pos(), gamestate.get_beer_pos())
+        gamestate.update()
+        map.draw(display)
+        pointer.draw(display)
+        gamestate.draw(display)
+        felix.draw(display)
+        pygame.display.update()
+
+        clock.tick(FPS)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--width", help="width of window", type=int)
+    parser.add_argument("--height", help="height of window", type=int)
+    parser.add_argument("--small", action="store_true", help="small map to reduce loading time")
+    parser.add_argument("--funny", action="store_true", help="makes the game funny")
+    args = parser.parse_args()
+
+    if args.width:
+        SCREEN_W = args.width
+    if args.height:
+        SCREEN_H = args.height
+
+    if args.small:
+        FELIX_START_X = 5000
+        FELIX_START_Y = 5000
+        MAP_PATH = "src/sprites/maps/map_2.png"
+
+    if args.funny:
+        TREE_VAR = 0.5
+        HOUSE_VAR = 0.3
+        ARROW_SIZE = 250
+        FELIX_SIZE = 40
+        FELIX_MAX_SPEED = 40
+        BEER_SIZE = 250
+
+
+    run()
+

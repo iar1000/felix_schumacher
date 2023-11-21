@@ -15,14 +15,14 @@ from agents.utils import rotate_around_center
 class Felix(Sprite):
     def __init__(self, x_screen: int, y_screen: int,
                  x_gobal: int, y_global: int,
-                 size: int = 100):
+                 size: int = 100, max_speed: int = 25):
         super().__init__()
 
         self.x_gobal = x_gobal
         self.y_gobal = y_global
 
         # visual
-        self.base_image = scale(load(os.path.join("src","sprites","agent_felix.png")), (size, size))
+        self.base_image = scale(load(os.path.join("src","sprites","agent_felix.png")), (int(3*size/4), size))
         self.image = self.base_image
         self.rect = self.image.get_rect()
         self.rect.center = (x_screen, y_screen)
@@ -34,7 +34,7 @@ class Felix(Sprite):
         # movement
         self.angle = 0
         self.v = 0.0
-        self.v_max = 25
+        self.v_max = max_speed
         self.v_min = -10
         self.v_steering = 5
         self.a_acceleration = 1.5
@@ -166,6 +166,6 @@ class Felix(Sprite):
         
     def draw(self, display):
         display.blit(self.image, self.rect)
-        draw.rect(display, "red", self.collision_box)
+        # draw.rect(display, "red", self.collision_box)
 
  

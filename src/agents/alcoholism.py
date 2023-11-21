@@ -22,11 +22,11 @@ class Alcoholism(pygame.sprite.Sprite):
         
         # gamestate
         self.max_beers = 10
-        self.beers_intus = 9
+        self.beers_intus = 0
         self.sleeping = False
 
         self.font = pygame.font.SysFont("Monaco", 36)        
-        self.font_big = pygame.font.SysFont("Monaco", 120)        
+        self.font_big = pygame.font.SysFont("Monaco", 200)        
 
         pygame.mixer.music.load(os.path.join("src","music","intro.mp3"))
         pygame.mixer.music.play(-1,0.0)
@@ -80,26 +80,26 @@ class Alcoholism(pygame.sprite.Sprite):
         else:
             prct = self.font.render(f"your are drunk felix, go home!", True, (0, 0, 0))
         prct_rect = prct.get_rect()
-        prct_rect.center = (self.map.offset_w, 200)
+        prct_rect.center = (self.map.offset_w, self.map.display_h / 6)
         display.blit(prct, prct_rect)
 
         # render health
         if self.felix.is_drunk:
-            pygame.draw.rect(display, (255,0,0), pygame.Rect(self.map.offset_w - 145, 250, int(350 * (self.felix.health / self.felix.health_max)), 100))
+            pygame.draw.rect(display, (255,0,0), pygame.Rect(self.map.offset_w - 145, 200, int(350 * (self.felix.health / self.felix.health_max)), 100))
 
             # health bar
             rect = self.image_health.get_rect()
-            rect.center = (self.map.offset_w, 300)
+            rect.center = (self.map.offset_w, 250)
             display.blit(self.image_health, rect)
 
         # render finish
         if self.sleeping:
-            prct = self.font_big.render(f"you win", True, (255, 217, 0))
+            prct = self.font_big.render(f"you win!", True, (255, 217, 0))
             prct_rect = prct.get_rect()
             prct_rect.center = (self.map.offset_w, self.map.offset_h)
             display.blit(prct, prct_rect)
 
-            prct = self.font.render(f"you made it home save! don't drink and drive!", True, (255, 217, 0))
+            prct = self.font.render(f"(don't drink and drive)", True, (255, 217, 0))
             prct_rect = prct.get_rect()
             prct_rect.center = (self.map.offset_w, self.map.offset_h + 100)
             display.blit(prct, prct_rect)      

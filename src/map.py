@@ -21,7 +21,7 @@ def color_to_tilespec(rgb: list) -> [str, str, str]:
         if rgb == [255, 100, 255]:
             base = os.path.join(basepath, "tiles", "tile_gras.png")
         if rgb == [0, 0, 0]:
-            base = os.path.join(basepath, "tiles", "tile_concrete.png")
+            base = os.path.join(basepath, "tiles", "tile_stone.jpg")
         
         c = random.randint(0, 2)
         if c == 0:
@@ -35,7 +35,7 @@ def color_to_tilespec(rgb: list) -> [str, str, str]:
         return base , house, "house"
 
     if rgb == [100, 100, 100]:
-        return os.path.join(basepath, "tiles", "tile_stone.png"), None, "road"
+        return os.path.join(basepath, "tiles", "tile_stone.jpg"), None, "road"
 
     if rgb == [255, 255, 0]:
         return os.path.join(basepath, "tiles", "tile_gras.png"), None, "gras"
@@ -68,8 +68,6 @@ def color_to_tilespec(rgb: list) -> [str, str, str]:
                 tree = os.path.join(basepath, "trees", "tree_naked.png")
             
         return base, tree, "tree"
-
-
     print(rgb)
 
 
@@ -79,6 +77,9 @@ class Map():
                  display_w: int, display_h: int,
                  map_path: str, 
                  tile_size = 50, sprite_size = 150, sprite_size_variance_tree = 0.15, sprite_size_variance_house = 0.08) -> None:
+        # hacking felix in the scene
+        self.felix_right_image = scale(load(os.path.join("src","sprites","agent_felix_right.png")), (81, 100))
+
         self.felix = felix
         self.display = display
         self.display_w, self.display_h = display_w, display_h
@@ -89,6 +90,9 @@ class Map():
         self.sprite_size_variance_house = int(sprite_size_variance_house * sprite_size)
         self.tiles, self.num_tiles_x, self.num_tiles_y = self._image_to_tile_matrix(image_path=map_path)
         print(f"tile matrix controll shape= {len(self.tiles[0])}x{len(self.tiles)}")
+
+        
+
 
     def _image_to_tile_matrix(self, image_path: str):
         """reads in an image and turns color values into tiles"""
@@ -126,6 +130,11 @@ class Map():
                 prct_rect = prct.get_rect()
                 prct_rect.topleft = ((y*width + x) / total_tiles * loading_bar_size + laoding_bar_offset - 80, self.offset_h + 5)
                 self.display.blit(prct, prct_rect)
+
+                rect = self.felix_right_image.get_rect()
+                rect.topleft = ((y*width + x) / total_tiles * loading_bar_size + laoding_bar_offset - 80, self.offset_h - 150)
+                self.display.blit(self.felix_right_image, rect)
+
             pygame.display.update()
         
         return tile_matrix, width, height
