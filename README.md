@@ -1,15 +1,27 @@
 # felix schumacher - the official game
 ## installation
-create a virtual environment and install all the necessary dependencies to run the game. 
+create a virtual environment in the top level folder and install all the necessary dependencies into it to run the game. 
 the dependencies are listed in `requirements.txt` and can installed with pip. the rest of the game assets are found in `src/`.
 ````bash
 python -m venv venv # create a virtual environment
+``````
+the directory structure should look like this now:
+```bash
+felix_schumacher
+|-- src/
+|-- venv/
+|-- requirements.txt
+|-- .gitignore
+|-- README.md
+```
+after creating the virtual environment, activate it and install the dependencies:
+````bash
 source venv/bin/activate # activate the environment
 pip install -r requirements.txt # install all dependencies
 ``````
 
 ## running the game
-the main game can be started from the terminal by running:
+the main game can be started in the terminal by running following from the top-level directory:
 ````
 python src/main.py
 
@@ -20,10 +32,17 @@ optional arguments:
   --small          play on small map (reduced loading time)
   --funny          play in funny mode (very hard)
 ````
-make sure you went through the installation guide first and that the virtual environment you created is activated.
+you can change some game variables via command line. for example, if you want to have a different screen size, let's say 900x600, you can do this by running:
+````
+python src/main.py --width 900 --height 600
+````
+note that `--small` and `--funny` don't need an additional arguments, the can be set as flags (true if set, false if not set).
 
 ### how to play
 use the keys on your keyboard to move and have fun! but be careful, too much alcohol changes your cognitive capabilities...
+
+### troubleshooting
+make sure you went through the installation guide first and everything is setup properly.
 
 ## further development
 feel free to use, change and enhace!
