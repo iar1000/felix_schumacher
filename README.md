@@ -1,5 +1,6 @@
 # felix schumacher - the official game
 ## installation
+### mac
 create a virtual environment in the top level folder and install all the necessary dependencies into it to run the game. 
 the dependencies are listed in `requirements.txt` and can installed with pip. the rest of the game assets are found in `src/`.
 ````bash
@@ -19,6 +20,9 @@ after creating the virtual environment, activate it and install the dependencies
 source venv/bin/activate # activate the environment
 pip install -r requirements.txt # install all dependencies
 ``````
+### windows
+for the setup of the virtual environment use the internet, for example [the following tutorial on how to setup a venv on linux and windows](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/).
+the installation of the requirements is the same.
 
 ## running the game
 the main game can be started in the terminal by running following from the top-level directory:
@@ -42,7 +46,7 @@ note that `--small` and `--funny` don't need an additional arguments, the can be
 use the keys on your keyboard to move and have fun! but be careful, too much alcohol changes your cognitive capabilities...
 
 ### troubleshooting
-make sure you went through the installation guide first and everything is setup properly.
+make sure you went through the installation guide first and everything is setup properly. if you did and it still doesn't work, ask ChatGPT. last resort is to message me.
 
 ## further development
 feel free to use, change and enhace!
