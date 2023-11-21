@@ -1,4 +1,5 @@
 
+import os
 import pygame
 import argparse
 from map import Map
@@ -23,12 +24,15 @@ FELIX_MAX_SPEED = 25
 
 FELIX_START_X = 10000
 FELIX_START_Y = 10000
-MAP_PATH = "src/sprites/maps/map_1.png"
+MAP_PATH = os.path.join("src", "sprites", "maps", "map_1.png")
 
 def run():
-    print("start game")
-    print("window size:", SCREEN_W, SCREEN_H)
-    print("map: ", MAP_PATH)
+    print("===========================")
+    print("==== FELIX SCHUMACHER =====")
+    print("===========================")
+    print("starting the game...")
+    print("\twindow size:", SCREEN_W, SCREEN_H)
+    print("\tmap: ", MAP_PATH)
     pygame.init()
 
     display = pygame.display.set_mode((SCREEN_W,SCREEN_H))
@@ -86,10 +90,10 @@ def run():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--width", help="width of window", type=int)
-    parser.add_argument("--height", help="height of window", type=int)
-    parser.add_argument("--small", action="store_true", help="small map to reduce loading time")
-    parser.add_argument("--funny", action="store_true", help="makes the game funny")
+    parser.add_argument("--width", help="change width of window (in pixels)", type=int)
+    parser.add_argument("--height", help="change height of window (in pixels)", type=int)
+    parser.add_argument("--small", action="store_true", help="play on small map (reduced loading time)")
+    parser.add_argument("--funny", action="store_true", help="play in funny mode (very hard)")
     args = parser.parse_args()
 
     if args.width:
@@ -100,7 +104,7 @@ if __name__ == "__main__":
     if args.small:
         FELIX_START_X = 5000
         FELIX_START_Y = 5000
-        MAP_PATH = "src/sprites/maps/map_2.png"
+        MAP_PATH = os.path.join("src", "sprites", "maps", "map_2.png")
 
     if args.funny:
         TREE_VAR = 0.5

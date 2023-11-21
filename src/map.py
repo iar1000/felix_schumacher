@@ -89,7 +89,7 @@ class Map():
         self.sprite_size_variance_tree = int(sprite_size_variance_tree * sprite_size)
         self.sprite_size_variance_house = int(sprite_size_variance_house * sprite_size)
         self.tiles, self.num_tiles_x, self.num_tiles_y = self._image_to_tile_matrix(image_path=map_path)
-        print(f"tile matrix controll shape= {len(self.tiles[0])}x{len(self.tiles)}")
+        print(f"\tmap shape= {len(self.tiles[0])}x{len(self.tiles)}")
 
         
 
@@ -100,9 +100,9 @@ class Map():
         height, width = image.size
         tile_matrix = [[None for _ in range(width)] for _ in range(height)]
         pixel_matrix = np.array(image)
-        print(f"map file {image_path}: ({width}x{height})")
-        print(f"tile matrix shape= {len(tile_matrix[0])}x{len(tile_matrix)}")
-        print(f"sprite variances: house={self.sprite_size_variance_house}, tree={self.sprite_size_variance_tree}")
+        print(f"\tmap size  : {width}x{height}")
+        print(f"\tnum tiles : {len(tile_matrix[0])}x{len(tile_matrix)}")
+        print(f"\tsprite variances: house : {self.sprite_size_variance_house}, tree={self.sprite_size_variance_tree}")
         
         total_tiles = height * width
         laoding_bar_offset = 200

@@ -40,7 +40,7 @@ class Alcoholism(pygame.sprite.Sprite):
             x = random.randint(0, self.map.num_tiles_x-1)
             y = random.randint(0, self.map.num_tiles_y-1)
         self.x, self.y = x * self.map.tile_size, y * self.map.tile_size
-        print(f"new beer at {self.x}x{self.y}")
+        print(f"new beer placed at ?x?")
     
     def get_beer_pos(self):
         return (self.x, self.y)
