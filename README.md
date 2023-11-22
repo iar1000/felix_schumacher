@@ -23,6 +23,7 @@ pip install -r requirements.txt # install all dependencies
 ### windows
 for the setup of the virtual environment use the internet, for example [the following tutorial on how to setup a venv on linux and windows](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/).
 the installation of the requirements is the same.
+a common issue on windows is [the virtualenv not activating](https://stackoverflow.com/questions/18713086/virtualenv-wont-activate-on-windows).
 
 ## running the game
 the main game can be started in the terminal by running following from the top-level directory:
